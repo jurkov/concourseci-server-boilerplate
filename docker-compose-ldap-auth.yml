@@ -5,6 +5,16 @@ services:
     image: eugenmayer/ldapexample
     ports:
       - 389:389
+    environment:
+      - HOSTNAME=ldap-server
+      - LDAP_TLS_CRT_FILENAME=my-cert.crt
+      - LDAP_TLS_KEY_FILENAME=my-cert.key
+      - LDAP_TLS_CA_CRT_FILENAME=my-ca.crt
+      - LDAP_TLS_ENFORCE=true
+      - LDAP_TLS_VERIFY_CLIENT=demand
+    networks:
+      - dev-network
+  
   web:
     depends_on:
       - ldapserver
@@ -53,4 +63,22 @@ services:
       # TODO: that does not work, neither with 'drupalwiki' or the full dn 'cn=drupalwiki,ou=groups,dc=kontextwork-test,dc=de'
       # TODO: so either the definition here does not work or the group assignment with CONCOURSE_LDAP_GROUP_SEARCH_*
       #CONCOURSE_MAIN_TEAM_LDAP_GROUP: "drupalwiki,main"
+    networks:
+      - dev-network
+    
+  sonarqube-server:
+    depends_on:
+      - ldapserver
+    build:
+      context: sonar-ldap
+      dockerfile: docker/Dockerfile.sonarqube
+    networks:
+      - dev-network
+    ports:
+      - "9000:9000"
+    environment:
+      - SONARQUBE_WEB_JVM_OPTS=-Djavax.net.ssl.keyStore=/root/keystore -Djavax.net.ssl.keyStorePassword=changeit
 
+networks:
+  dev-network:
+    driver: bridge
