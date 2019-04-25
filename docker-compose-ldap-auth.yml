@@ -66,30 +66,30 @@ services:
     networks:
       - dev-network
       
-    mail:
-      container_name: mail
-      image: sealeo/mail-openldap
-      volumes:
-       - /home/mail/mailboxes:/vmail
-       - /home/mail/ssl/smtp.kontextwork-test.de.tld:/ssl/smtp.kontextwork-test.de.tld:ro
-       - /home/mail/ssl/imap.kontextwork-test.de.tld:/ssl/imap.kontextwork-test.de.tld:ro
-       - /home/mail/dkim:/etc/opendkim
-      ports:
-       - "25:25"
-       - 587:587
-       - 993:993
-      external_links:
-       - ldapserver
-      environment:
-       - TZ=Etc/UTC
-       - MAIL_DOMAIN=kontextwork-test.de.tld
-       - LDAP_DOMAIN_BASE=kontextwork-test.de
-       - LDAP_ADMIN_PASSWORD=kontextwork
-       - LDAP_USE_TLS=0
-       - DKIM_KEY_SIZE=2048
-      networks:
-       - dev-network
-    
+  mail:
+    container_name: mail
+    image: sealeo/mail-openldap
+    volumes:
+     - /home/mail/mailboxes:/vmail
+     - /home/mail/ssl/smtp.kontextwork-test.de.tld:/ssl/smtp.kontextwork-test.de.tld:ro
+     - /home/mail/ssl/imap.kontextwork-test.de.tld:/ssl/imap.kontextwork-test.de.tld:ro
+     - /home/mail/dkim:/etc/opendkim
+    ports:
+     - "25:25"
+     - 587:587
+     - 993:993
+    external_links:
+     - ldapserver
+    environment:
+     - TZ=Etc/UTC
+     - MAIL_DOMAIN=kontextwork-test.de.tld
+     - LDAP_DOMAIN_BASE=kontextwork-test.de
+     - LDAP_ADMIN_PASSWORD=kontextwork
+     - LDAP_USE_TLS=0
+     - DKIM_KEY_SIZE=2048
+    networks:
+     - dev-network
+
   sonarqube-server:
     depends_on:
       - ldapserver
